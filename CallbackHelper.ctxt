@@ -1,0 +1,18 @@
+#BlueJ class context
+comment0.params=callback
+comment0.target=CallbackHelper(com.springrts.ai.oo.clb.OOAICallback)
+comment0.text=\r\n\ Constructor\ for\ objects\ of\ class\ CallbackHelper\r\n
+comment1.params=
+comment1.target=com.springrts.ai.oo.clb.OOAICallback\ getCallback()
+comment2.params=msg
+comment2.target=void\ say(java.lang.String)
+comment2.text=\r\n\ sends\ a\ message\ to\ the\ game\r\n
+comment3.params=loc1\ loc2
+comment3.target=float\ getDistanceBetween(com.springrts.ai.oo.AIFloat3,\ com.springrts.ai.oo.AIFloat3)
+comment4.params=mid\ distance
+comment4.target=com.springrts.ai.oo.AIFloat3\ randomPointAround(com.springrts.ai.oo.AIFloat3,\ float)
+comment5.params=
+comment5.target=com.springrts.ai.oo.AIFloat3\ randomPoint()
+comment6.params=list\ unit
+comment6.target=com.springrts.ai.oo.clb.UnitDef\ findMatch(java.util.List,\ com.springrts.ai.oo.clb.Unit)
+numComments=7

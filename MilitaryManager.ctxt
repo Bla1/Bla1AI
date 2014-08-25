@@ -1,0 +1,25 @@
+#BlueJ class context
+comment0.params=ID\ manager\ resManager\ track
+comment0.target=MilitaryManager(int,\ UnitManager,\ ResourceManager,\ EnemyTracker)
+comment0.text=\r\n\ Constructor\ for\ objects\ of\ class\ attackDecider\r\n
+comment1.params=
+comment1.target=void\ act()
+comment1.text=\r\n\ called\ by\ update(),\ checks\ the\ status\ of\ the\ factory,\ and\ attack\ units\r\n
+comment2.params=num
+comment2.target=void\ setMaxCons(int)
+comment3.params=
+comment3.target=boolean\ factoryExists()
+comment3.text=\r\n\ \ \ \ checks\ to\ see\ if\ a\ factory\ exists\r\n
+comment4.params=
+comment4.target=void\ facDestroyed()
+comment4.text=\r\n\ \ \ \ resets\ the\ pointer\ to\ the\ factory\r\n
+comment5.params=
+comment5.target=com.springrts.ai.oo.clb.UnitDef\ findBuilder()
+comment5.text=\r\n\ \ \ \ finds\ which\ unitdef\ of\ a\ builder\ the\ factory\ can\ build\r\n
+comment6.params=
+comment6.target=com.springrts.ai.oo.clb.UnitDef\ findRaider()
+comment6.text=\r\n\ \ \ \ finds\ which\ unitdef\ of\ a\ builder\ the\ factory\ can\ build\r\n
+comment7.params=
+comment7.target=void\ placeFactory()
+comment7.text=\r\n\ \ \ \ gets\ a\ builder,\ and\ builds\ a\ factory\r\n
+numComments=8

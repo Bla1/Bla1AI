@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.params=
+comment0.target=EnemyTracker()
+comment1.params=unit
+comment1.target=void\ add(com.springrts.ai.oo.clb.Unit)
+comment2.params=unit
+comment2.target=void\ remove(com.springrts.ai.oo.clb.Unit)
+comment3.params=
+comment3.target=boolean\ locsStored()
+comment4.params=loc
+comment4.target=com.springrts.ai.oo.AIFloat3\ getLocationClosestTo(com.springrts.ai.oo.AIFloat3)
+numComments=5
