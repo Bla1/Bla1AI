@@ -38,18 +38,7 @@ public class Bla1AI extends OOAI implements AI
             tracker = new EnemyTracker();
             manager = new UnitManager();
             rManage = new ResourceManager(teamID);
-            //if(teamId==null)
-            //CallbackHelper.say("teamID");
-            if(manager==null)
-                CallbackHelper.say("manager");
-            try{
-                Emanager = new EconManager(teamId, manager, rManage);
-            }
-            catch(Exception ex){
-                CallbackHelper.say("Error in selected");
-                CallbackHelper.say(ex.toString());
-            }
-            //Emanager = new econManager(teamId, manager, mapManage);
+            Emanager = new EconManager(teamId, manager, rManage);
             Mmanage = new MilitaryManager(teamID, manager, rManage,tracker);
         }
         catch(Exception ex){
