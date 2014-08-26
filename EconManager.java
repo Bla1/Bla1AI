@@ -6,12 +6,10 @@ import com.springrts.ai.oo.AIFloat3;
 /**
  * Manages all the cons of the AI. Instructs them to build economic structures accordingly
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Richard Nai
  */
 public class EconManager
 {
-    // instance variables - replace the example below with your own
     private int teamid;
     private int numCons;
     private UnitManager uManage;
