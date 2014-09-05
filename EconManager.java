@@ -189,11 +189,11 @@ public class EconManager
     /**
      * checks to see if the 2 locations are on top of each other
      */
-    public boolean isOnTopOf(AIFloat3 loc1, AIFloat3 loc2){
-        boolean x = Math.abs(loc1.x-loc2.x)<10;
-        boolean z = Math.abs(loc1.z-loc2.z)<10;
-        return x&&z;
-    }
+    //public boolean isOnTopOf(AIFloat3 loc1, AIFloat3 loc2){
+    //    boolean x = Math.abs(loc1.x-loc2.x)<10;
+    //    boolean z = Math.abs(loc1.z-loc2.z)<10;
+    //    return x&&z;
+    //}
 
     public void setNumCons(int num){
         numCons = num;
