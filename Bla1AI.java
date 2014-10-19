@@ -31,17 +31,19 @@ public class Bla1AI extends OOAI implements AI
      */
     public int init(int teamId, OOAICallback callback)
     {
-        try{
-            teamID=teamId;
+        try
+        {
+            teamID = teamId;
             new CallbackHelper(callback);
             new UnitDecider();
             tracker = new EnemyTracker();
             manager = new UnitManager();
-            rManage = new ResourceManager(teamID);
-            Emanager = new EconManager(teamId, manager, rManage);
-            Mmanage = new MilitaryManager(teamID, manager, rManage,tracker);
+            rManage = new ResourceManager(this.teamID);
+            Emanager = new EconManager(teamId, this.manager, this.rManage);
+            Mmanage = new MilitaryManager(this.teamID, this.manager, this.rManage, this.tracker);
         }
-        catch(Exception ex){
+        catch (Exception ex)
+        {
             CallbackHelper.say("Error in init");
             CallbackHelper.say(ex.toString());
         }
@@ -160,27 +162,29 @@ public class Bla1AI extends OOAI implements AI
      */
     public int unitDamaged(Unit unit, Unit attacker, float damage, AIFloat3 dir, WeaponDef weaponDef, boolean paralyzer)
     {
-        try{ //code taken from decomplied version of Bla1AI0.32 after I added broken 0.33 code
-            double metalNeeded = (attacker.getHealth()/attacker.getMaxHealth())*attacker.getDef().getCost(CallbackHelper.getCallback().getResourceByName("Metal"));
-            //CallbackHelper.say("Metal of attacker is initialized at: " + metalNeeded +"attacker: " + attacker.toString());
-            for(Unit raider: manager.getAllRaiders()){
-                if(metalNeeded>0){
-                    raider.fight(CallbackHelper.randomPointAround(attacker.getPos(),raider.getDef().getMaxWeaponRange()), (short)0, 0);
-                    metalNeeded-=raider.getDef().getCost(CallbackHelper.getCallback().getResourceByName("Metal"));
-                    //CallbackHelper.say("Sending 1 raider: " + metalNeeded);
+        try{
+            if(attacker!=null){
+                double metalNeeded = (attacker.getHealth()/attacker.getMaxHealth())*attacker.getDef().getCost(CallbackHelper.getCallback().getResourceByName("Metal"));
+                //CallbackHelper.say("Metal of attacker is initialized at: " + metalNeeded +"attacker: " + attacker.toString());
+                for(Unit raider: manager.getAllRaiders()){
+                    if(metalNeeded>0){
+                        raider.fight(CallbackHelper.randomPointAround(attacker.getPos(),raider.getDef().getMaxWeaponRange()), (short)0, 0);
+                        metalNeeded-=raider.getDef().getCost(CallbackHelper.getCallback().getResourceByName("Metal"));
+                        //CallbackHelper.say("Sending 1 raider: " + metalNeeded);
+                    }
+                    else{
+                        //CallbackHelper.say("breaking");
+                        break;
+                    }
                 }
-                else{
-                    //CallbackHelper.say("breaking");
-                    break;
-                }
-            }
 
-            //while(manager.getAllRaiders().size()>0&&metalNeeded>0){
-            //    Unit raider = manager.getNextRaider();
-            //    metalNeeded-=raider.getDef().getCost(CallbackHelper.getCallback().getResourceByName("Metal"));
-            //    CallbackHelper.say("Sending 1 raider, metal of attacker is now: " + metalNeeded);
-            //    raider.fight(attacker.getPos(), (short)0, 0);
-            //}
+                //while(manager.getAllRaiders().size()>0&&metalNeeded>0){
+                //    Unit raider = manager.getNextRaider();
+                //    metalNeeded-=raider.getDef().getCost(CallbackHelper.getCallback().getResourceByName("Metal"));
+                //    CallbackHelper.say("Sending 1 raider, metal of attacker is now: " + metalNeeded);
+                //    raider.fight(attacker.getPos(), (short)0, 0);
+                //}
+            }
         }
         catch (Exception ex) {
             //CallbackHelper.say("Error in unitDamaged() "+ex.toString());

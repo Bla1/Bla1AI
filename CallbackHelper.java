@@ -9,11 +9,14 @@ import java.util.List;
  * in Bla1AI
  * 
  * @author Richard Nai
+ * @version (a version number or a date)
  */
 public class CallbackHelper
 {
     private static OOAICallback engineCallback = null;
-    
+    /**
+     * Constructor for objects of class CallbackHelper
+     */
     public CallbackHelper(OOAICallback callback)
     {
         try{

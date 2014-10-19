@@ -64,7 +64,7 @@ public class MilitaryManager
                 }
                 else{// if(metal>0.3&&energy>0.3){
                     manage.getCommander().guard(fac, (short)0, 0);
-                    fac.build(findRaider(), fac.getPos(), 0, (short)0, 0);
+                    fac.build(randomArmedUnit(), fac.getPos(), 0, (short)0, 0);
                 }
             }
         }
@@ -116,20 +116,20 @@ public class MilitaryManager
     /**
     finds which unitdef of a builder the factory can build
      */
-    public UnitDef findRaider(){
+    public UnitDef randomArmedUnit(){
         try{
+            List<UnitDef> armedUnits = new ArrayList<UnitDef>();
             List<UnitDef> Ops = fac.getDef().getBuildOptions();
-            for(UnitDef op: Ops){
-                for(UnitDef uni: UnitDecider.getRaiders()){
-                    if(op==uni){
-                        return op;
-                    }
+            for (UnitDef op : Ops) {
+                if (op.getWeaponMounts().size() > 0) {
+                    armedUnits.add(op);
                 }
             }
+            return (UnitDef)armedUnits.get((int)(Math.random() * armedUnits.size()));
         }
-        catch(Exception ex){
-            CallbackHelper.say("Error in findRaider");
-            CallbackHelper.say(ex.toString());
+        catch (Exception ex)
+        {
+            CallbackHelper.say("Error in randomeArmedUnit " + ex.toString());
         }
         return null;
     }
@@ -140,20 +140,16 @@ public class MilitaryManager
     private void placeFactory(){
         try{
             if(manage.getNextBuilder()!=null){
-                //CallbackHelper.say("recieved order to build fac");
                 List<UnitDef> buildOps = manage.getNextBuilder().getDef().getBuildOptions();
                 UnitDef facToBuild = null;
-                //CallbackHelper.say("Reached point 1");
                 for(UnitDef Op: buildOps){
                     for(UnitDef best: bestFac){
                         if(Op.equals(best))
-                        //CallbackHelper.say("Reached point 2");
                             facToBuild=best;
                     }
                 }
 
                 manage.getNextBuilder().build(facToBuild, manage.getNextBuilder().getPos(), 0, (short)0, 0);
-                //CallbackHelper.say("Recieved call to build fac");
             }
         }
         catch(Exception ex){
