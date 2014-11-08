@@ -55,11 +55,9 @@ public class Bla1AI extends OOAI implements AI
      */
     public int update(int frame) {
         try{
-            if(Mmanage.factoryExists()){
-                Emanager.expandEcon();
-
-            }
             Mmanage.act();
+            Emanager.expandEcon();
+            
 
         }
         catch(Exception ex){
@@ -102,7 +100,9 @@ public class Bla1AI extends OOAI implements AI
                     unit.patrolTo(position, (short)0, 0);
                 }
             }
-            //manager.taskAllIdleNanos();
+            if(unit.getDef().isBuilder()&&unit.getDef().getSpeed()==0&&unit.getDef().getBuildDistance()==128){
+                manager.addToFactory(unit);
+            }
         }
         catch(Exception ex){
             CallbackHelper.say("Error in unitFinished");
@@ -116,8 +116,6 @@ public class Bla1AI extends OOAI implements AI
      */
     public int message(int player, String message){
         try{
-            //CallbackHelper.say("manage.getAllRaiders().size(): " + manager.getAllRaiders().size()+"\n" + "manage.getAllOccupiedRaiders().size(): " + manager.getAllOccupiedRaiders().size());
-            //CallbackHelper.say("%"+manager.getAllOccupiedRaiders().size()/(manager.getAllOccupiedRaiders().size()+manager.getAllRaiders().size()));
             if(message.substring(0,7).equals("Bla1AI ")){
                 int numBuilders = Integer.parseInt(message.substring(7, message.length()));
                 CallbackHelper.say("Setting max builders to " + numBuilders);
@@ -139,15 +137,19 @@ public class Bla1AI extends OOAI implements AI
             if(unit.getTeam()==teamID){
                 manager.remove(unit);
                 manager.removeFromUnfinished(unit);
-                if(unit.getDef().isBuilder()&&unit.getDef().getSpeed()==0){
+                //Mmanage.calculateNumBuilders();
+                //if(unit.getDef().isBuilder()&&unit.getDef().getSpeed()==0){
                     //Mmanage.setFactory(false);
-                    Mmanage.facDestroyed();
-                }
+                //    Mmanage.facDestroyed();
+                //}
                 for(UnitDef uni: UnitDecider.getMexes()){
                     if(unit.getDef().equals(uni)){
                         //CallbackHelper.say("found match"+unit.getPos().x+""+unit.getPos().z);
                         Emanager.addToAvailable(unit.getPos());
                     }
+                }
+                if(unit.getDef().isBuilder()&&unit.getDef().getSpeed()==0&&unit.getDef().getBuildDistance()==128){
+                    manager.removeFromFactory(unit);
                 }
             }
         }

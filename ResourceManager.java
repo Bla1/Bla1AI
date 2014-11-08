@@ -1,5 +1,5 @@
 package Bla1AI;
-
+import com.springrts.ai.oo.clb.Resource;
 /**
  * Returns information on the economy of the AI.
  * 
@@ -59,5 +59,13 @@ public class ResourceManager
     
     public float getCurrentEnergyStoragePercentage(){
         return getCurrentEnergy()/getCurrentEnergyMax();
+    }
+    
+    public static Resource getMetalReference(){
+        return CallbackHelper.getCallback().getResourceByName("Metal");
+    }
+    
+    public static Resource getEnergyReference(){
+        return CallbackHelper.getCallback().getResourceByName("Energy");
     }
 }

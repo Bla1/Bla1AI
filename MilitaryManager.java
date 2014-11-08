@@ -13,26 +13,24 @@ public class MilitaryManager
     private List<UnitDef> unitDefs;
     private List<UnitDef> bestFac;
     private int myID;
-    private int numBuilders = 10;
+    private int numBuilders;
     private UnitManager manage;
     private ResourceManager rManage;
     private EnemyTracker tracker;
-    private Unit fac;
     /**
      * Constructor for objects of class attackDecider
      */
     public MilitaryManager(int ID, UnitManager manager, ResourceManager resManager, EnemyTracker track){
         try{
             rManage = resManager;
+            numBuilders=10;
             myID = ID;
             manage=manager;
             tracker = track;
             bestFac = UnitDecider.decideFactory();
-            fac = null;
         }
         catch(Exception ex){
-            CallbackHelper.say("Error in militaryManager init");
-            CallbackHelper.say(ex.toString());
+            CallbackHelper.say("Error in militaryManager init " + ex.toString());
         }
     }
 
@@ -41,36 +39,34 @@ public class MilitaryManager
      */
 
     public void act(){
-        try{if(manage.getAllRaiders().size()!=0&&manage.getAllOccupiedRaiders().size()/(double)(manage.getAllOccupiedRaiders().size()+manage.getAllRaiders().size())<0.1)
+        try{
+            if(manage.getAllRaiders().size()!=0&&manage.getAllOccupiedRaiders().size()/(double)(manage.getAllOccupiedRaiders().size()+manage.getAllRaiders().size())<0.1)
                 manage.getNextIdleRaider().fight(CallbackHelper.randomPoint(), (short)0, 0);
-            if(manage.getNumRaiders()>100&&tracker.locsStored()){
-                for(Unit uni: manage.getAllRaiders()){
-                    uni.fight(tracker.getLocationClosestTo(uni.getPos()), (short)0, 0);
-                }
-            }
-            if(!manage.checkForFac()){ //check if a factory exists or not
+            //if(manage.getNumRaiders()>100&&tracker.locsStored()){
+            //    for(Unit uni: manage.getAllRaiders()){
+            //        uni.fight(tracker.getLocationClosestTo(uni.getPos()), (short)0, 0);
+            //    }
+            //}
+            if(manage.factories.size()==0)
                 placeFactory();
-                return;
-            }
-            if(fac==null){ //check if there is a reference to the factory
-                fac=manage.findFac();
-
-            }
-            else if(fac.getCurrentCommands().size()==0){
-                float metal = rManage.getCurrentMetalStoragePercentage();
-                float energy = rManage.getCurrentEnergyStoragePercentage();
-                if(manage.getNumCons()<numBuilders){
-                    fac.build(findBuilder(), fac.getPos(), 0, (short)0, 0);
-                }
-                else{// if(metal>0.3&&energy>0.3){
-                    manage.getCommander().guard(fac, (short)0, 0);
-                    fac.build(randomArmedUnit(), fac.getPos(), 0, (short)0, 0);
+            else{
+                for(Unit fac: manage.factories){
+                    if(fac.getCurrentCommands().size()==0){
+                        float metal = rManage.getCurrentMetalStoragePercentage();
+                        float energy = rManage.getCurrentEnergyStoragePercentage();
+                        if(manage.getNumCons()<numBuilders){
+                            fac.build(findBuilder(fac), fac.getPos(), 0, (short)0, 0);
+                        }
+                        else{// if(metal>0.3&&energy>0.3){
+                            manage.getCommander().guard(fac, (short)0, 0);
+                            fac.build(randomArmedUnit(fac), fac.getPos(), 0, (short)0, 0);
+                        }
+                    }
                 }
             }
         }
         catch(Exception ex){
-            CallbackHelper.say("Error in act");
-            CallbackHelper.say(ex.toString());
+            CallbackHelper.say("Error in act " + ex.toString());
         }
     }
 
@@ -78,24 +74,24 @@ public class MilitaryManager
         numBuilders=num;
     }
 
-    /**
-    checks to see if a factory exists
-     */
-    public boolean factoryExists(){
-        return fac!=null;
-    }
+    ///**
+    //checks to see if a factory exists
+    // */
+    //public boolean factoryExists(){
+    //    return fac!=null;
+    //}
 
-    /**
-    resets the pointer to the factory
-     */
-    public void facDestroyed(){
-        fac=null;
-    }
+    ///**
+    //resets the pointer to the factory
+    // */
+    //public void facDestroyed(){
+    //    fac=null;
+    //}
 
     /**
     finds which unitdef of a builder the factory can build
      */
-    public UnitDef findBuilder(){
+    public UnitDef findBuilder(Unit fac){
         try{
             List<UnitDef> Ops = fac.getDef().getBuildOptions();
             for(UnitDef op: Ops){
@@ -116,7 +112,7 @@ public class MilitaryManager
     /**
     finds which unitdef of a builder the factory can build
      */
-    public UnitDef randomArmedUnit(){
+    public UnitDef randomArmedUnit(Unit fac){
         try{
             List<UnitDef> armedUnits = new ArrayList<UnitDef>();
             List<UnitDef> Ops = fac.getDef().getBuildOptions();
@@ -132,6 +128,10 @@ public class MilitaryManager
             CallbackHelper.say("Error in randomeArmedUnit " + ex.toString());
         }
         return null;
+    }
+
+    public int getNumBuilders(){//for testing purposes only
+        return numBuilders;
     }
 
     /**
@@ -157,4 +157,8 @@ public class MilitaryManager
             CallbackHelper.say(ex.toString());
         }
     }
+
+    //public void upgradeToT2(){
+    
+    //}
 }

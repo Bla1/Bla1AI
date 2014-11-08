@@ -13,7 +13,7 @@ public class EconManager
 {
     // instance variables - replace the example below with your own
     private int teamid;
-    private int numCons;
+    private int numCons; //PLACEHOLDER, TRY AND USE numBuilders IN MILITARY MANAGER ASAP
     private UnitManager uManage;
     private ResourceManager rManage;
     Resource metal= CallbackHelper.getCallback().getResourceByName("Metal");
@@ -39,12 +39,13 @@ public class EconManager
             //float energyUsagePercentage = rManage.getEnergyUsagePercentage();
             float metal = rManage.getCurrentMetalStoragePercentage();
             float energy = rManage.getCurrentEnergyStoragePercentage();
-
-            if(uManage.getNextBuilder()!=null){
+            boolean idleBuilders = true;
+            if(uManage.getNextBuilder()!=null){//want to change to while
+                Unit uni = uManage.getNextBuilder();
                 if(metal>0.4&&energy>0.4){
                     if(uManage.getNextBuilderNotCom()!=null&&uManage.getNumNanos()<numCons){
                         boolean notInRange = true;
-                        Unit uni = uManage.getNextBuilderNotCom();
+                        uni = uManage.getNextBuilderNotCom();
                         AIFloat3 goodLoc = null;
                         while(notInRange){
                             AIFloat3 loc = uManage.getFacPos();
@@ -63,7 +64,6 @@ public class EconManager
                     }
                 }
                 else if(metal>energy&&energy<0.95){
-                    Unit uni = uManage.getMostExpensiveBuilder();
                     if(uManage.getNextEBuildingUnderConstruction()!=null)
                         uni.repair(uManage.getNextEBuildingUnderConstruction(),(short)0, 0);
                     else
@@ -73,7 +73,6 @@ public class EconManager
                     placeMex(uManage.getNextBuilder());
                 }
                 else{
-                    Unit uni = uManage.getMostExpensiveBuilder();
                     uni.build(CallbackHelper.findMatch(UnitDecider.getMetalMakers(), uni),uni.getPos(),0,(short)0, 0);
                 }
             }
@@ -83,75 +82,6 @@ public class EconManager
         }
 
     }
-
-    ///**
-    // * finds the UnitDef of an energy building that a builder can build.
-    // */
-    //public UnitDef findAppropriateEnergy(Unit uni){
-    //    try{
-    //        List<UnitDef> uniBuildEnergyOptions = uni.getDef().getBuildOptions();
-    //        ArrayList<UnitDef> similarOptions = new ArrayList<UnitDef>();
-    //        for(UnitDef def: UnitDecider.getEMakers()){
-    //            for(UnitDef uniDef: uniBuildEnergyOptions){
-    //                if(def.equals(uniDef)){
-    //                    similarOptions.add(def);
-    //                }
-    //            }
-    //        }
-    //        return similarOptions.get(0);
-    //    }
-    //    catch(Exception ex){
-    //        CallbackHelper.say("Error in findApprpriateEnergy");
-    //        CallbackHelper.say(ex.toString());
-    //    }
-    //    return null;
-    //}
-
-    ///**
-    // * finds the UnitDef of an metal mine building that a builder can build.
-    // */
-    //public UnitDef findAppropriateMetal(Unit uni){
-    //    try{
-    //        List<UnitDef> uniBuildMetalOptions = uni.getDef().getBuildOptions();
-    //        ArrayList<UnitDef> similarOptions = new ArrayList<UnitDef>();
-    //        for(UnitDef def: UnitDecider.getMexes()){
-    //           for(UnitDef uniDef: uniBuildMetalOptions){
-    //                if(def.equals(uniDef)){
-    //                    similarOptions.add(def);
-    //                }
-    //            }
-    //        }
-    //        return similarOptions.get(0);
-    //    }
-    //    catch(Exception ex){
-    //        CallbackHelper.say("Error in findApprpriateMetal");
-    //        CallbackHelper.say(ex.toString());
-    //    }
-    //    return null;
-    //}
-
-    ///**
-    // * finds the UnitDef of a nano tower that a builder can build.
-    // */
-    //public UnitDef findAppropriateNano(Unit uni){
-    //    try{
-    //        List<UnitDef> uniBuildMetalOptions = uni.getDef().getBuildOptions();
-    //        ArrayList<UnitDef> similarOptions = new ArrayList<UnitDef>();
-    //        for(UnitDef def: UnitDecider.getNanos()){
-    //            for(UnitDef uniDef: uniBuildMetalOptions){
-    //                if(def.equals(uniDef)){
-    //                    similarOptions.add(def);
-    //                }
-    //            }
-    //        }
-    //        return similarOptions.get(0);
-    //    }
-    //    catch(Exception ex){
-    //        CallbackHelper.say("Error in findAppropriateNano");
-    //        CallbackHelper.say(ex.toString());
-    //    }
-    //    return null;
-    //}
 
     /**
      * finds the closest availale metal spot, and builds a extractor there
@@ -196,8 +126,7 @@ public class EconManager
         boolean z = Math.abs(loc1.z-loc2.z)<10;
         return x&&z;
     }
-
-    public void setNumCons(int num){
-        numCons = num;
-    }
+    //public void setNumCons(int num){
+    //    numCons = num;
+    //}
 }

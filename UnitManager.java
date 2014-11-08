@@ -14,7 +14,7 @@ public class UnitManager
 {
     private LinkedList<Unit> units;
     private LinkedList<Unit> unitsUnderConstruction;
-    //private Unit fac = null;
+    public LinkedList<Unit> factories; //screw encapsulation
     /**
      * Constructor for objects of class unitManager
      */
@@ -23,6 +23,7 @@ public class UnitManager
         try{
             units = new LinkedList<Unit>();
             unitsUnderConstruction = new LinkedList<Unit>();
+            factories = new LinkedList<Unit>();
         }
         catch(Exception ex){
             CallbackHelper.say("error in unitManager init");
@@ -72,6 +73,14 @@ public class UnitManager
         unitsUnderConstruction.remove(unit);
     }
 
+    public void addToFactory(Unit unit){
+        factories.add(unit);
+    }
+
+    public void removeFromFactory(Unit unit){
+        factories.remove(unit);
+    }
+
     /**
      * adds the unit to the ArrayList of unfinished units
      */
@@ -87,26 +96,13 @@ public class UnitManager
         return units;
     }
 
-    //public ArrayList<AIFloat3> getAllUnitPos(){
-    //    try{
-    //        ArrayList<AIFloat3> ans = new ArrayList<AIFloat3>();
-    //        for(Unit uni: units){
-    //            ans.add(uni.getPos());
-    //        }
-    //        return ans;
-    //    }
-    //    catch(Exception ex){
-    //        CallbackHelper.say("Error in getAllUnitPos");
-    //    }
-    //    return null;
-    //}
-         /**
+    /**
      * returns a reference to all the unfinished, LinkedList because iterating through all of them is faster
      */
     public LinkedList<Unit> getAllUnfinishedUnits(){
         return unitsUnderConstruction;
     }
-    
+
     public Unit getNextEBuildingUnderConstruction(){
         for(Unit uni: unitsUnderConstruction){
             for(UnitDef mker: UnitDecider.getEMakers()){
@@ -116,7 +112,7 @@ public class UnitManager
         }
         return null;
     }
-    
+
     public Unit getNextNanoUnderConstruction(){
         for(Unit uni: unitsUnderConstruction){
             for(UnitDef nano: UnitDecider.getNanos()){
@@ -126,7 +122,7 @@ public class UnitManager
         }
         return null;
     }
-    
+
     /**
      * gets the next idle builder
      */
@@ -149,13 +145,6 @@ public class UnitManager
         return null;
     }
 
-    //public Unit getFirstOccupiedBuilder(){
-    //    for(Unit uni: units){
-    //        if(uni.getDef().isBuilder()&&uni.getCurrentCommands().size()>0&&uni.getSpeed()>0)
-    //            return uni;
-    //    }
-    //    return null;
-    //}
     /**
      * returns references to all builders, LinkedList because iterating through all of them is faster
      */
@@ -179,15 +168,6 @@ public class UnitManager
         }
         return ans;
     }
-    
-    //public LinkedList<Unit> getAllUnoccupiedBuilders(){
-    //    LinkedList<Unit> ans = new LinkedList<Unit>();
-    //   for(Unit uni: units){
-    //       if(uni.getDef().isBuilder()&&uni.getCurrentCommands().size()==0&&uni.getSpeed()>0)
-    //            ans.add(uni);
-    //    }
-    //    return ans;
-    //}
 
     public Unit getMostExpensiveBuilder(){
         float metalCost=0;
@@ -207,36 +187,29 @@ public class UnitManager
         }
         return mostExpensive;
     }
-
-    //public void assignAllBuildersExceptComToo(Unit unitToGaurd){
-    //    for(Unit uni: getAllIdleBuilders()){
-    //        if(uni.getCurrentCommands().size()==0)
-    //            uni.guard(unitToGaurd, (short)0, 0);
-    //    }
-    //}
-    /**
-     * checks to see if there is a factory alive or not
-     */
-    public boolean checkForFac(){
-        try{
-            for(Unit uni: getAllUnits()){
-                if(uni.getDef().isBuilder()&&uni.getDef().getSpeed()==0&&uni.getDef().getBuildDistance()==128){
-                    return true;
-                }
-            }
-            for(Unit uni: getAllUnfinishedUnits()){
-                if(uni.getDef().isBuilder()&&uni.getDef().getSpeed()==0&&uni.getDef().getBuildDistance()==128){
-                    return true;
-                }
-            }
-            return false;
-        }
-        catch(Exception ex){
-            CallbackHelper.say("Error in checkForFactory");
-            CallbackHelper.say(ex.toString());
-        }
-        return false;
-    }
+    //     /**
+    //      * checks to see if there is a factory alive or not
+    //      */
+    //     public boolean checkForFac(){
+    //         try{
+    //             for(Unit uni: getAllUnits()){
+    //                 if(uni.getDef().isBuilder()&&uni.getDef().getSpeed()==0&&uni.getDef().getBuildDistance()==128){
+    //                     return true;
+    //                 }
+    //             }
+    //             for(Unit uni: getAllUnfinishedUnits()){
+    //                 if(uni.getDef().isBuilder()&&uni.getDef().getSpeed()==0&&uni.getDef().getBuildDistance()==128){
+    //                     return true;
+    //                 }
+    //             }
+    //             return false;
+    //         }
+    //         catch(Exception ex){
+    //             CallbackHelper.say("Error in checkForFactory");
+    //             CallbackHelper.say(ex.toString());
+    //         }
+    //         return false;
+    //     }
     /**
      * finds the position of the factory
      */
@@ -249,6 +222,7 @@ public class UnitManager
         }
         return null;
     }
+
     /**
      * gets a reference to the factory
      */
@@ -271,27 +245,7 @@ public class UnitManager
         }
         return null;
     }
-    ///**
-    // * tells all the idle nanos to do something.
-    // */
-    //public void taskAllIdleNanos(){
-    //    for(Unit uni: getAllUnits()){
-    //        if(uni.getDef().isBuilder()&&uni.getDef().getSpeed()==0&&uni.getDef().getBuildDistance()>128&&uni.getCurrentCommands().size()==0){
-    //            uni.fight(uni.getPos(),(short)0,0);
-    //        }
-    //    }
 
-    //}
-
-    public Unit getNextRaider(){
-        for(Unit uni: getAllUnits()){
-            if(uni.getDef().getWeaponMounts().size()==1){
-                return uni;
-            }
-        }
-        return null;
-    }
-    
     public Unit getNextIdleRaider(){
         for(Unit uni: getAllUnits()){
             if(uni.getDef().getWeaponMounts().size()==1&&uni.getCurrentCommands().size()==0){
@@ -300,8 +254,8 @@ public class UnitManager
         }
         return null;
     }
-    
-    public ArrayList<Unit> getAllRaiders(){ //returns all IDLE raiders
+
+    public ArrayList<Unit> getAllRaiders(){
         ArrayList<Unit> raiders = new ArrayList<Unit>();
         for(Unit uni: getAllUnits()){
             if(uni.getDef().getWeaponMounts().size()==1&&uni.getCurrentCommands().size()==0){
@@ -310,8 +264,8 @@ public class UnitManager
         }
         return raiders;
     }
-    
-    public ArrayList<Unit> getAllOccupiedRaiders(){ //returns all IDLE raiders
+
+    public ArrayList<Unit> getAllOccupiedRaiders(){
         ArrayList<Unit> raiders = new ArrayList<Unit>();
         for(Unit uni: getAllUnits()){
             if(uni.getDef().getWeaponMounts().size()==1&&uni.getCurrentCommands().size()>0){
@@ -319,21 +273,6 @@ public class UnitManager
             }
         }
         return raiders;
-    }
-
-    public Unit getClosestRaider(AIFloat3 loc){ //returns closest idle raider to a point
-        ArrayList<Unit> raiders = getAllRaiders();
-        if(raiders.size()==0)
-            return null;
-        float minDistance = CallbackHelper.getDistanceBetween(raiders.get(0).getPos(), loc);
-        Unit closest = raiders.get(0);
-        for(Unit uni: raiders){
-            if(CallbackHelper.getDistanceBetween(uni.getPos(), loc)<minDistance){
-                minDistance=CallbackHelper.getDistanceBetween(uni.getPos(), loc);
-                closest = uni;
-            }
-        }
-        return closest;
     }
 
     public int getNumCons(){
