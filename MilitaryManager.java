@@ -40,17 +40,23 @@ public class MilitaryManager
 
     public void act(){
         try{
-            if(manage.getAllRaiders().size()!=0&&manage.getAllOccupiedRaiders().size()/(double)(manage.getAllOccupiedRaiders().size()+manage.getAllRaiders().size())<0.1)
-                manage.getNextIdleRaider().fight(CallbackHelper.randomPoint(), (short)0, 0);
+            try{
+                if(manage.getAllRaiders().size()!=0&&manage.getAllOccupiedRaiders().size()/(double)(manage.getAllOccupiedRaiders().size()+manage.getAllRaiders().size())<0.1){
+                    manage.getNextIdleRaider().fight(CallbackHelper.randomPoint(), (short)0, 0);
+                }
+            }
+            catch(Exception ex){
+                CallbackHelper.say("Error in scouting " + ex.toString());
+            }
             //if(manage.getNumRaiders()>100&&tracker.locsStored()){
             //    for(Unit uni: manage.getAllRaiders()){
             //        uni.fight(tracker.getLocationClosestTo(uni.getPos()), (short)0, 0);
             //    }
             //}
-            if(manage.factories.size()==0)
+            if(manage.getFactories().size()==0)
                 placeFactory();
             else{
-                for(Unit fac: manage.factories){
+                for(Unit fac: manage.getFactories()){
                     if(fac.getCurrentCommands().size()==0){
                         float metal = rManage.getCurrentMetalStoragePercentage();
                         float energy = rManage.getCurrentEnergyStoragePercentage();
@@ -67,6 +73,19 @@ public class MilitaryManager
         }
         catch(Exception ex){
             CallbackHelper.say("Error in act " + ex.toString());
+        }
+    }
+
+    public void assistMode(){
+        if(manage.getAllRaiders().size()!=0&&manage.getAllOccupiedRaiders().size()/(double)(manage.getAllOccupiedRaiders().size()+manage.getAllRaiders().size())<0.1){
+            manage.getNextIdleRaider().fight(CallbackHelper.randomPoint(), (short)0, 0);
+        }
+        if(manage.getFactories().size()>0){
+            for(Unit fac: manage.getFactories()){
+                if(fac.getCurrentCommands().size()==0){
+                    fac.build(randomArmedUnit(fac), fac.getPos(), 0, (short)0, 0);
+                }
+            }
         }
     }
 
@@ -110,14 +129,14 @@ public class MilitaryManager
     }
 
     /**
-    finds which unitdef of a builder the factory can build
+     * Returns a UnitDef of an armed unit that the factory can build
      */
     public UnitDef randomArmedUnit(Unit fac){
         try{
             List<UnitDef> armedUnits = new ArrayList<UnitDef>();
             List<UnitDef> Ops = fac.getDef().getBuildOptions();
             for (UnitDef op : Ops) {
-                if (op.getWeaponMounts().size() > 0) {
+                if (op.getWeaponMounts().size() > 0&& !op.isBuilder()) {
                     armedUnits.add(op);
                 }
             }
@@ -159,6 +178,6 @@ public class MilitaryManager
     }
 
     //public void upgradeToT2(){
-    
+
     //}
 }

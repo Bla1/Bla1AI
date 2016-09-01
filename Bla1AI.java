@@ -17,6 +17,7 @@ public class Bla1AI extends OOAI implements AI
     private MilitaryManager Mmanage=null;
     private ResourceManager rManage = null;
     private EnemyTracker tracker = null;
+    boolean assistMode;
     //boolean first = true;
     int teamID;
     /**
@@ -41,6 +42,7 @@ public class Bla1AI extends OOAI implements AI
             rManage = new ResourceManager(this.teamID);
             Emanager = new EconManager(teamId, this.manager, this.rManage);
             Mmanage = new MilitaryManager(this.teamID, this.manager, this.rManage, this.tracker);
+            assistMode = false;
         }
         catch (Exception ex)
         {
@@ -55,10 +57,14 @@ public class Bla1AI extends OOAI implements AI
      */
     public int update(int frame) {
         try{
-            Mmanage.act();
-            Emanager.expandEcon();
-            
-
+            if(assistMode&&frame%10==0){
+                Mmanage.assistMode();
+            }
+            else if(!assistMode){
+                //CallbackHelper.say("running normal mode");
+                Mmanage.act();
+                Emanager.expandEcon();
+            }
         }
         catch(Exception ex){
             CallbackHelper.say("Error in update");
@@ -116,11 +122,30 @@ public class Bla1AI extends OOAI implements AI
      */
     public int message(int player, String message){
         try{
+            if(message.toString().equals("Bla1AI assist")){
+                if(assistMode == false){
+                    assistMode = true;
+                    CallbackHelper.say("Assist mode is " + assistMode);
+                }
+                else{
+                    assistMode = false;
+                    CallbackHelper.say("Assist mode is " + assistMode);
+                }
+            }
             if(message.substring(0,7).equals("Bla1AI ")){
                 int numBuilders = Integer.parseInt(message.substring(7, message.length()));
                 CallbackHelper.say("Setting max builders to " + numBuilders);
                 Mmanage.setMaxCons(numBuilders);
             }
+            //if(player==teamID){
+
+            else if(message.equals("Bla1AI assistmode")){
+                if(assistMode==true)
+                    CallbackHelper.say("Assist mode is " + assistMode);
+                else
+                    CallbackHelper.say("Assist mode is " + assistMode);
+            }
+            //}
             return 0;
         }
         catch(Exception ex){
@@ -139,7 +164,7 @@ public class Bla1AI extends OOAI implements AI
                 manager.removeFromUnfinished(unit);
                 //Mmanage.calculateNumBuilders();
                 //if(unit.getDef().isBuilder()&&unit.getDef().getSpeed()==0){
-                    //Mmanage.setFactory(false);
+                //Mmanage.setFactory(false);
                 //    Mmanage.facDestroyed();
                 //}
                 for(UnitDef uni: UnitDecider.getMexes()){
@@ -198,8 +223,18 @@ public class Bla1AI extends OOAI implements AI
     called by the engine every time an enemy unit is seen, in the case of Bla1AI, the unit is added to the enemy tracker
      */
     public int enemyEnterLOS(Unit enemy){
-        if(enemy.getSpeed()==0)
-            tracker.add(enemy);
+        //if(enemy.getSpeed()==0)
+        //    tracker.add(enemy);
+        double metalNeeded = (enemy.getHealth()/enemy.getMaxHealth())*enemy.getDef().getCost(CallbackHelper.getCallback().getResourceByName("Metal"));
+        for(Unit raider: manager.getAllRaiders()){
+            if(metalNeeded>0){
+                raider.fight(CallbackHelper.randomPointAround(enemy.getPos(),raider.getDef().getMaxWeaponRange()), (short)0, 0);
+                metalNeeded-=raider.getDef().getCost(CallbackHelper.getCallback().getResourceByName("Metal"));
+            }
+            else{
+                break;
+            }
+        }
         return 0;
     }
 
@@ -211,4 +246,15 @@ public class Bla1AI extends OOAI implements AI
             tracker.remove(enemy);
         return 0;
     }
+
+    public int unitGiven(Unit unit, int oldTeamId, int newTeamId){
+        if(newTeamId==teamID){
+            manager.add(unit);
+        }
+        return 0;
+    }
+    //public int unitMoveFailed(Unit unit){
+    //    CallbackHelper.say(unit.getDef().getHumanName());
+    //    return 0;
+    //}
 }

@@ -11,7 +11,6 @@ import com.springrts.ai.oo.AIFloat3;
  */
 public class EconManager
 {
-    // instance variables - replace the example below with your own
     private int teamid;
     private int numCons; //PLACEHOLDER, TRY AND USE numBuilders IN MILITARY MANAGER ASAP
     private UnitManager uManage;
@@ -23,7 +22,7 @@ public class EconManager
      */
     public EconManager(int teamID, UnitManager manager, ResourceManager resManager)
     {
-        numCons = 10;
+        numCons = 5;
         rManage = resManager;
         teamid = teamID;
         uManage=manager;
@@ -44,33 +43,60 @@ public class EconManager
                 Unit uni = uManage.getNextBuilder();
                 if(metal>0.4&&energy>0.4){
                     if(uManage.getNextBuilderNotCom()!=null&&uManage.getNumNanos()<numCons){
-                        boolean notInRange = true;
-                        uni = uManage.getNextBuilderNotCom();
-                        AIFloat3 goodLoc = null;
-                        while(notInRange){
-                            AIFloat3 loc = uManage.getFacPos();
-                            loc.x+= 2*(Math.random()-0.5)*CallbackHelper.findMatch(UnitDecider.getNanos(), uni).getBuildDistance();
-                            //loc.y+= 2*(Math.random()-0.5)*findAppropriateNano(uni).getBuildDistance();
-                            loc.z+= 2*(Math.random()-0.5)*CallbackHelper.findMatch(UnitDecider.getNanos(), uni).getBuildDistance();
-                            if(Math.sqrt(CallbackHelper.getDistanceBetween(uManage.getFacPos(),loc))<=CallbackHelper.findMatch(UnitDecider.getNanos(), uni).getBuildDistance()){
-                                goodLoc=loc;
-                                break;
+                        if(uManage.getNextNanoUnderConstruction()!=null){
+                            uni.repair(uManage.getNextNanoUnderConstruction(), (short)0, 0);
+                        }
+                        else{
+                            boolean notInRange = true;
+                            uni = uManage.getNextBuilderNotCom();
+                            AIFloat3 goodLoc = null;
+                            while(notInRange){
+                                AIFloat3 loc = uManage.getFacPos();
+                                loc.x+= 2*(Math.random()-0.5)*CallbackHelper.findMatch(UnitDecider.getNanos(), uni).getBuildDistance();
+                                //loc.y+= 2*(Math.random()-0.5)*findAppropriateNano(uni).getBuildDistance();
+                                loc.z+= 2*(Math.random()-0.5)*CallbackHelper.findMatch(UnitDecider.getNanos(), uni).getBuildDistance();
+                                if(Math.sqrt(CallbackHelper.getDistanceBetween(uManage.getFacPos(),loc))<=CallbackHelper.findMatch(UnitDecider.getNanos(), uni).getBuildDistance()){
+                                    goodLoc=loc;
+                                    break;
+                                }
+                                //uni.build(CallbackHelper.findMatch(UnitDecider.getNanos(), uni), goodLoc,0,(short)0, 0);
+                            }
+                            for(Unit bdr: uManage.getAllIdleBuilders()){
+                                bdr.build(CallbackHelper.findMatch(UnitDecider.getNanos(), uni), goodLoc,0,(short)0, 0);
                             }
                         }
-                        if(uManage.getNextNanoUnderConstruction()!=null)
-                            uni.repair(uManage.getNextNanoUnderConstruction(), (short)0, 0);
-                        else
-                            uni.build(CallbackHelper.findMatch(UnitDecider.getNanos(), uni), goodLoc,0,(short)0, 0);
+                        //if(uManage.getNextNanoUnderConstruction()!=null)
+                        //    uni.repair(uManage.getNextNanoUnderConstruction(), (short)0, 0);
+                        //else
+                        //    uni.build(CallbackHelper.findMatch(UnitDecider.getNanos(), uni), goodLoc,0,(short)0, 0);
                     }
                 }
                 else if(metal>energy&&energy<0.95){
-                    if(uManage.getNextEBuildingUnderConstruction()!=null)
+                    if(uManage.getNextEBuildingUnderConstruction()!=null){
                         uni.repair(uManage.getNextEBuildingUnderConstruction(),(short)0, 0);
-                    else
-                        uni.build(CallbackHelper.findMatch(UnitDecider.getEMakers(), uni),uni.getPos(),0,(short)0, 0);
+                    }
+                    else{
+                        boolean farEnough = true;
+                        AIFloat3 eloc = uni.getPos();
+                        eloc.x += 2*(Math.random()-0.5)*uni.getDef().getBuildDistance();
+                        eloc.z += 2*(Math.random()-0.5)*uni.getDef().getBuildDistance();
+                        for(Unit fac:uManage.getFactories()){
+                            if(Math.sqrt(CallbackHelper.getDistanceBetween(eloc, fac.getPos()))<75){
+
+                                farEnough = false;
+                                break;
+                            }
+                        }
+                        if(farEnough){
+
+                            for(Unit bdr: uManage.getAllIdleBuilders()){
+                                bdr.build(CallbackHelper.findMatch(UnitDecider.getEMakers(), uni),eloc,0,(short)0, 0);
+                            }
+                        }
+                    }
                 }
                 else if(availableMetalExtractors.size()>0){
-                    placeMex(uManage.getNextBuilder());
+                    placeMex(uni);
                 }
                 else{
                     uni.build(CallbackHelper.findMatch(UnitDecider.getMetalMakers(), uni),uni.getPos(),0,(short)0, 0);
@@ -87,15 +113,20 @@ public class EconManager
      * finds the closest availale metal spot, and builds a extractor there
      */
     public void placeMex(Unit unit){
-        float bestDistance = CallbackHelper.getDistanceBetween(unit.getPos(), availableMetalExtractors.get(0));
-        AIFloat3 bestLoc = availableMetalExtractors.get(0);
-        for(AIFloat3 loc:availableMetalExtractors){
-            if(CallbackHelper.getDistanceBetween(unit.getPos(), loc)<bestDistance){
-                bestDistance = CallbackHelper.getDistanceBetween(unit.getPos(), loc);
-                bestLoc=loc;
+        try{
+            float bestDistance = CallbackHelper.getDistanceBetween(unit.getPos(), availableMetalExtractors.get(0));
+            AIFloat3 bestLoc = availableMetalExtractors.get(0);
+            for(AIFloat3 loc:availableMetalExtractors){
+                if(CallbackHelper.getDistanceBetween(unit.getPos(), loc)<bestDistance){
+                    bestDistance = CallbackHelper.getDistanceBetween(unit.getPos(), loc);
+                    bestLoc=loc;
+                }
             }
+            unit.build(CallbackHelper.findMatch(UnitDecider.getMexes(),unit), bestLoc,0, (short)0, 0);
         }
-        uManage.getNextBuilder().build(CallbackHelper.findMatch(UnitDecider.getMexes(),uManage.getNextBuilder()), bestLoc,0, (short)0, 0);
+        catch(Exception ex){
+            CallbackHelper.say("Error in placeMex "+ex.toString());
+        }
     }
 
     /**

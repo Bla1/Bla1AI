@@ -14,7 +14,7 @@ public class UnitManager
 {
     private LinkedList<Unit> units;
     private LinkedList<Unit> unitsUnderConstruction;
-    public LinkedList<Unit> factories; //screw encapsulation
+    private LinkedList<Unit> factories;
     /**
      * Constructor for objects of class unitManager
      */
@@ -80,9 +80,13 @@ public class UnitManager
     public void removeFromFactory(Unit unit){
         factories.remove(unit);
     }
+    
+    public LinkedList<Unit> getFactories(){
+        return factories;
+    }
 
     /**
-     * adds the unit to the ArrayList of unfinished units
+     * gets the commander
      */
     public Unit getCommander(){
         for(Unit uni: getAllUnits()){
@@ -248,7 +252,7 @@ public class UnitManager
 
     public Unit getNextIdleRaider(){
         for(Unit uni: getAllUnits()){
-            if(uni.getDef().getWeaponMounts().size()==1&&uni.getCurrentCommands().size()==0){
+            if(uni.getDef().getWeaponMounts().size()!=0&&uni.getCurrentCommands().size()==0&&!uni.getDef().isBuilder()){
                 return uni;
             }
         }
@@ -258,7 +262,7 @@ public class UnitManager
     public ArrayList<Unit> getAllRaiders(){
         ArrayList<Unit> raiders = new ArrayList<Unit>();
         for(Unit uni: getAllUnits()){
-            if(uni.getDef().getWeaponMounts().size()==1&&uni.getCurrentCommands().size()==0){
+            if(uni.getDef().getWeaponMounts().size()!=0&&uni.getCurrentCommands().size()==0&&!uni.getDef().isBuilder()){
                 raiders.add(uni);
             }
         }
@@ -268,7 +272,7 @@ public class UnitManager
     public ArrayList<Unit> getAllOccupiedRaiders(){
         ArrayList<Unit> raiders = new ArrayList<Unit>();
         for(Unit uni: getAllUnits()){
-            if(uni.getDef().getWeaponMounts().size()==1&&uni.getCurrentCommands().size()>0){
+            if(uni.getDef().getWeaponMounts().size()!=0&&uni.getCurrentCommands().size()>0&&!uni.getDef().isBuilder()){
                 raiders.add(uni);
             }
         }
@@ -288,7 +292,7 @@ public class UnitManager
     public int getNumRaiders(){
         int ans = 0;
         for(Unit uni: getAllUnits()){
-            if(uni.getDef().getWeaponMounts().size()==1){
+            if(uni.getDef().getWeaponMounts().size()!=0&&!uni.getDef().isBuilder()){
                 ans++;
             }
         }

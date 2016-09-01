@@ -58,6 +58,21 @@ public class CallbackHelper
         }
         return null;
     }
+    
+    public static AIFloat3 randomPointOutside(AIFloat3 mid, float distance){
+        say("recieved call to randomPointOutSide");
+        boolean InRange = true;
+        while(InRange){
+            AIFloat3 answer = mid;
+            answer.x+= 4*(Math.random()-0.5)*distance;
+            answer.z+=4*(Math.random()-0.5)*distance;
+            if(Math.sqrt(getDistanceBetween(mid, answer))>=distance){
+                say("Exiting randomPointOutside, returning "+ answer.toString());
+                return answer;
+            }
+        }
+        return null;
+    }
 
     public static AIFloat3 randomPoint(){
         return new AIFloat3((float)Math.random()*engineCallback.getMap().getWidth()*8, (float)0, (float)Math.random()*engineCallback.getMap().getHeight()*8);
