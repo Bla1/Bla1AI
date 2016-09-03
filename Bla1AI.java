@@ -1,10 +1,10 @@
-package Bla1AI;
+//package Bla1AI;
+
 import com.springrts.ai.AI;
 import com.springrts.ai.oo.AIFloat3;
 import com.springrts.ai.oo.OOAI;
 import com.springrts.ai.oo.clb.*;
-import java.util.ArrayList;
-import java.util.List;
+
 /**
  * Main AI file
  * 
@@ -28,7 +28,7 @@ public class Bla1AI extends OOAI implements AI
     }
 
     /**
-     * This meathod is called when the engine puts the AI in control of a team
+     * This method is called when the engine puts the AI in control of a team
      */
     public int init(int teamId, OOAICallback callback)
     {
@@ -40,20 +40,21 @@ public class Bla1AI extends OOAI implements AI
             tracker = new EnemyTracker();
             manager = new UnitManager();
             rManage = new ResourceManager(this.teamID);
-            Emanager = new EconManager(teamId, this.manager, this.rManage);
-            Mmanage = new MilitaryManager(this.teamID, this.manager, this.rManage, this.tracker);
+            Emanager = new EconManager(this.manager, this.rManage);
+            Mmanage = new MilitaryManager(this.manager);
             assistMode = false;
         }
         catch (Exception ex)
         {
             CallbackHelper.say("Error in init");
             CallbackHelper.say(ex.toString());
+            return 0;
         }
         return 0;
     }
 
     /**
-     * This meathod is called by the engine every frame, approximately 30 times a second, for the AI to update itself.
+     * This method is called by the engine every frame, approximately 30 times a second, for the AI to update itself.
      */
     public int update(int frame) {
         try{
@@ -74,7 +75,7 @@ public class Bla1AI extends OOAI implements AI
     }
 
     /**
-     * This meathod is called by the engine every time a unit is created, and in the case of Bla1AI, it is added to the UnitManager
+     * This method is called by the engine every time a unit is created, and in the case of Bla1AI, it is added to the UnitManager
      */
     public int unitCreated(Unit unit, Unit Builder){
         try{
@@ -90,7 +91,7 @@ public class Bla1AI extends OOAI implements AI
     }
 
     /**
-     * This meathod is called by the engine every time a unit is finished, and in the case of Bla1AI, it is added to the UnitManager
+     * This method is called by the engine every time a unit is finished, and in the case of Bla1AI, it is added to the UnitManager
      */
     public int unitFinished(Unit unit)
     {   try{
@@ -118,7 +119,7 @@ public class Bla1AI extends OOAI implements AI
     }
 
     /**
-     * This meathod is called by the engine every time a message is sent by a player, which I used for debugging
+     * This method is called by the engine every time a message is sent by a player, which I used for debugging
      */
     public int message(int player, String message){
         try{

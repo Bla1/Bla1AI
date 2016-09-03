@@ -1,4 +1,4 @@
-package Bla1AI;
+//package Bla1AI;
 import com.springrts.ai.oo.clb.Resource;
 /**
  * Returns information on the economy of the AI.

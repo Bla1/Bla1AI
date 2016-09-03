@@ -1,7 +1,6 @@
-package Bla1AI;
+//package Bla1AI;
 import com.springrts.ai.oo.clb.*;
 import java.util.List;
-import java.util.ArrayList;
 import com.springrts.ai.oo.AIFloat3;
 /**
  * Manages all the cons of the AI. Instructs them to build economic structures accordingly
@@ -11,7 +10,6 @@ import com.springrts.ai.oo.AIFloat3;
  */
 public class EconManager
 {
-    private int teamid;
     private int numCons; //PLACEHOLDER, TRY AND USE numBuilders IN MILITARY MANAGER ASAP
     private UnitManager uManage;
     private ResourceManager rManage;
@@ -20,11 +18,10 @@ public class EconManager
     /**
      * Constructor for objects of class econManager
      */
-    public EconManager(int teamID, UnitManager manager, ResourceManager resManager)
+    public EconManager(UnitManager manager, ResourceManager resManager)
     {
         numCons = 5;
         rManage = resManager;
-        teamid = teamID;
         uManage=manager;
         availableMetalExtractors = CallbackHelper.getCallback().getMap().getResourceMapSpotsPositions(metal);
     }
@@ -38,7 +35,6 @@ public class EconManager
             //float energyUsagePercentage = rManage.getEnergyUsagePercentage();
             float metal = rManage.getCurrentMetalStoragePercentage();
             float energy = rManage.getCurrentEnergyStoragePercentage();
-            boolean idleBuilders = true;
             if(uManage.getNextBuilder()!=null){//want to change to while
                 Unit uni = uManage.getNextBuilder();
                 if(metal>0.4&&energy>0.4){
@@ -110,7 +106,7 @@ public class EconManager
     }
 
     /**
-     * finds the closest availale metal spot, and builds a extractor there
+     * finds the closest available metal spot, and builds a extractor there
      */
     public void placeMex(Unit unit){
         try{
@@ -157,7 +153,4 @@ public class EconManager
         boolean z = Math.abs(loc1.z-loc2.z)<10;
         return x&&z;
     }
-    //public void setNumCons(int num){
-    //    numCons = num;
-    //}
 }

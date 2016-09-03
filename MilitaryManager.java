@@ -1,6 +1,5 @@
-package Bla1AI;
+//package Bla1AI;
 import com.springrts.ai.oo.clb.*;
-import com.springrts.ai.oo.AIFloat3;
 import java.util.List;
 import java.util.ArrayList;
 /**
@@ -10,23 +9,18 @@ import java.util.ArrayList;
  */
 public class MilitaryManager
 {
-    private List<UnitDef> unitDefs;
     private List<UnitDef> bestFac;
-    private int myID;
     private int numBuilders;
     private UnitManager manage;
-    private ResourceManager rManage;
-    private EnemyTracker tracker;
+    //private ResourceManager rManage;
     /**
      * Constructor for objects of class attackDecider
      */
-    public MilitaryManager(int ID, UnitManager manager, ResourceManager resManager, EnemyTracker track){
+    public MilitaryManager(UnitManager manager){
         try{
-            rManage = resManager;
+            //rManage = resManager;
             numBuilders=10;
-            myID = ID;
             manage=manager;
-            tracker = track;
             bestFac = UnitDecider.decideFactory();
         }
         catch(Exception ex){
@@ -58,8 +52,8 @@ public class MilitaryManager
             else{
                 for(Unit fac: manage.getFactories()){
                     if(fac.getCurrentCommands().size()==0){
-                        float metal = rManage.getCurrentMetalStoragePercentage();
-                        float energy = rManage.getCurrentEnergyStoragePercentage();
+                        //float metal = rManage.getCurrentMetalStoragePercentage();
+                        //float energy = rManage.getCurrentEnergyStoragePercentage();
                         if(manage.getNumCons()<numBuilders){
                             fac.build(findBuilder(fac), fac.getPos(), 0, (short)0, 0);
                         }
@@ -108,7 +102,7 @@ public class MilitaryManager
     //}
 
     /**
-    finds which unitdef of a builder the factory can build
+    finds which UnitDefs of builders the factory can build
      */
     public UnitDef findBuilder(Unit fac){
         try{

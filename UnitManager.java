@@ -1,7 +1,6 @@
-package Bla1AI;
+//package Bla1AI;
 import java.util.LinkedList;
 import java.util.ArrayList;
-import java.util.List;
 import com.springrts.ai.oo.clb.*;
 import com.springrts.ai.oo.AIFloat3;
 

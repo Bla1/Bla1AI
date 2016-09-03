@@ -1,11 +1,11 @@
-package Bla1AI;
+//package Bla1AI;
 import com.springrts.ai.oo.clb.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.Float;
 import java.lang.Math;
 /**
- * Decides which units the AI will use, all meathods here return types of units.
+ * Decides which units the AI will use, all methods here return types of units.
  * @author Richard Nai
  */
 public class UnitDecider
@@ -189,9 +189,6 @@ public class UnitDecider
         return null;
     }
 
-    private static List<UnitDef> getT1BotFactories(){
-        return T1kBotFactories;
-    }
 
     public static List<UnitDef> findT2BotFactories(){
         try{
@@ -235,10 +232,6 @@ public class UnitDecider
             CallbackHelper.say(ex.toString());
         }
         return null;
-    }
-
-    private static List<UnitDef> getT1VehFactories(){
-        return T1vehFactories;
     }
 
     public static List<UnitDef> findT2VehFactories(){

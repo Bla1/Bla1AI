@@ -1,4 +1,4 @@
-package Bla1AI;
+//package Bla1AI;
 import com.springrts.ai.oo.clb.*;
 import com.springrts.ai.oo.AIFloat3;
 import java.lang.Math;
